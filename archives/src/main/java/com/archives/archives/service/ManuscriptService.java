@@ -2,7 +2,8 @@ package com.archives.archives.service;
 
 import com.archives.archives.dto.ManuscriptDTO;
 import com.archives.archives.entity.Manuscript;
-import com.archives.archives.entity.Tag;
+import com.archives.archives.dto.FolioDTO;
+import com.archives.archives.dto.TagDTO;
 import com.archives.archives.repository.ManuscriptRepository;
 
 import org.springframework.stereotype.Service;
@@ -72,42 +73,71 @@ public class ManuscriptService {
     public ManuscriptDTO toDTO(Manuscript m) {
         ManuscriptDTO dto = new ManuscriptDTO();
 
-        dto.id = m.getId();
-        dto.title = m.getTitle();
-        dto.cote = m.getCote();
-        dto.theme = m.getTheme();
-        dto.manuscriptName = m.getManuscriptName();
-        dto.date = m.getDate();
-        dto.manufacturingPlace = m.getManufacturingPlace();
-        dto.conservationPlace = m.getConservationPlace();
-        dto.link = m.getLink();
-        dto.support = m.getSupport();
-        dto.dimension = m.getDimension();
+        dto.setId(m.getId());
+        dto.setTitle(m.getTitle());
+        dto.setCote(m.getCote());
+        dto.setTheme(m.getTheme());
+        dto.setManuscriptName(m.getManuscriptName());
+        dto.setDate(m.getDate());
+        dto.setManufacturingPlace(m.getManufacturingPlace());
+        dto.setConservationPlace(m.getConservationPlace());
+        dto.setLink(m.getLink());
+        dto.setSupport(m.getSupport());
+        dto.setDimension(m.getDimension());
 
-        if (m.getTags() != null) {
-            dto.tags = m.getTags()
+        if(m.getTags() != null) {
+            dto.setTags(
+                m.getTags()
                     .stream()
-                    .map(Tag::getName)
-                    .toList();
+                    .map(tag -> {
+                        TagDTO tagDTO = new TagDTO();
+                        tagDTO.setId(tag.getId());
+                        tagDTO.setName(tag.getName());
+                        return tagDTO;
+                    })
+                    .toList()
+            );
+        }
+
+        if(m.getFolios() != null) {
+            dto.setFolios(
+                m.getFolios()
+                    .stream()
+                    .map(folio -> {
+                        FolioDTO folioDTO = new FolioDTO();
+                        folioDTO.setId(folio.getId());
+                        folioDTO.setPage(folio.getPage());
+                        folioDTO.setFolio(folio.getFolio());
+                        folioDTO.setSectionName(folio.getSectionName());
+                        folioDTO.setIlluminationPosition(folio.getIlluminationPosition());
+                        folioDTO.setTranscription(folio.getTranscription());
+                        folioDTO.setZoom(folio.getZoom());
+                        folioDTO.setIlluminationType(folio.getIlluminationType());
+                        folioDTO.setDescription(folio.getDescription());
+                        return folioDTO;
+                    })
+                    .toList()
+            );
         }
 
         return dto;
     }
 
-    // Convertit un DTO en Entity pour l'enregistrement en base de données
+    // Convertit un DTO en Entity pour l'enregistrement 
+    // en base de données
     public Manuscript toEntity(ManuscriptDTO dto) {
         Manuscript m = new Manuscript();
 
-        m.setTitle(dto.title);
-        m.setCote(dto.cote);
-        m.setTheme(dto.theme);
-        m.setManuscriptName(dto.manuscriptName);
-        m.setDate(dto.date);
-        m.setManufacturingPlace(dto.manufacturingPlace);
-        m.setConservationPlace(dto.conservationPlace);
-        m.setLink(dto.link);
-        m.setSupport(dto.support);
-        m.setDimension(dto.dimension);
+        m.setTitle(dto.getTitle());
+        m.setCote(dto.getCote());
+        m.setTheme(dto.getTheme());
+        m.setManuscriptName(dto.getManuscriptName());
+        m.setDate(dto.getDate());
+        m.setManufacturingPlace(dto.getManufacturingPlace());
+        m.setConservationPlace(dto.getConservationPlace());
+        m.setLink(dto.getLink());
+        m.setSupport(dto.getSupport());
+        m.setDimension(dto.getDimension());
 
         return m;
     }

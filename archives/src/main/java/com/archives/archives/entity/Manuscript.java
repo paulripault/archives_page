@@ -111,6 +111,13 @@ public class Manuscript {
         this.link = link;
     }
 
+    public List<Folio> getFolios() {
+        return folios;
+    }
+    public void setFolios(List<Folio> folios) {
+        this.folios = folios;
+    }
+
     public List<Tag> getTags() {
     return tags;
     }

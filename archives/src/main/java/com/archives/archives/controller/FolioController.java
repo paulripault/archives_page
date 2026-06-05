@@ -1,6 +1,6 @@
 package com.archives.archives.controller;
 
-import com.archives.archives.entity.Folio;
+import com.archives.archives.dto.FolioDTO;
 import com.archives.archives.service.FolioService;
 
 import java.util.List;
@@ -17,22 +17,22 @@ public class FolioController {
     }
 
     @GetMapping
-    public List<Folio> getAll() {
+    public List<FolioDTO> getAll() {
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public Folio getById(@PathVariable Long id) {
+    public FolioDTO getById(@PathVariable Long id) {
         return service.getById(id);
     }
 
     @PostMapping
-    public Folio create(@RequestBody Folio folio) {
+    public FolioDTO create(@RequestBody FolioDTO folio) {
         return service.create(folio);
     }
 
     @PutMapping("/{id}")
-    public Folio update(@PathVariable Long id, @RequestBody Folio folio) {
+    public FolioDTO update(@PathVariable Long id, @RequestBody FolioDTO folio) {
         return service.update(id, folio);
     }
 

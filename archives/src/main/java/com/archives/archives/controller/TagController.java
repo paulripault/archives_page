@@ -1,6 +1,6 @@
 package com.archives.archives.controller;
 
-import com.archives.archives.entity.Tag;
+import com.archives.archives.dto.TagDTO;
 import com.archives.archives.service.TagService;
 
 import java.util.List;
@@ -17,23 +17,23 @@ public class TagController {
     }
 
     @GetMapping
-    public List<Tag> getAll() {
+    public List<TagDTO> getAll() {
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public Tag getById(@PathVariable Long id) {
+    public TagDTO getById(@PathVariable Long id) {
         return service.getById(id);
     }
 
     @PostMapping
-    public Tag create(@RequestBody Tag tag) {
-        return service.create(tag);
+    public TagDTO create(@RequestBody TagDTO tagDTO) {
+        return service.create(tagDTO);
     }
 
     @PutMapping("/{id}")
-    public Tag update(@PathVariable Long id, @RequestBody Tag tag) {
-        return service.update(id, tag);
+    public TagDTO update(@PathVariable Long id, @RequestBody TagDTO tagDTO) {
+        return service.update(id, tagDTO);
     }
 
     @DeleteMapping("/{id}")
