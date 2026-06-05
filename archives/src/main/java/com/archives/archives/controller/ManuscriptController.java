@@ -1,30 +1,45 @@
 package com.archives.archives.controller;
 
-import com.archives.archives.entity.Manuscript;
+import com.archives.archives.dto.ManuscriptDTO;
 import com.archives.archives.service.ManuscriptService;
-import org.springframework.web.bind.annotation.*;
 
-//import java.util.List;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/manuscripts")
 public class ManuscriptController {
+
     private final ManuscriptService service;
 
     public ManuscriptController(ManuscriptService service) {
         this.service = service;
     }
-/*
+
     @GetMapping
-    public List<Manuscript> getAll() {
+    public List<ManuscriptDTO> getAll() {
         return service.getAll();
     }
-*/
+
+    @GetMapping("/{id}")
+    public ManuscriptDTO getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
 
     @PostMapping
-    public Manuscript create(@RequestBody Manuscript manuscript) {
-        System.out.println("TITLE = " + manuscript.getTitle());
-        return service.create(manuscript);
+    public ManuscriptDTO create(@RequestBody ManuscriptDTO dto) {
+        return service.create(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ManuscriptDTO update(@PathVariable Long id, @RequestBody ManuscriptDTO dto) {
+        return service.update(id, dto);  
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 
 }

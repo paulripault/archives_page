@@ -1,5 +1,9 @@
 package com.archives.archives.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,11 +16,21 @@ public class Manuscript {
 
     private String title;
     private String cote;
-    private String theme;
-    private String manuscriptName;
     private String date;
+    private String theme;
+    private String support;
+    private String dimension;
+    private String manuscriptName;
     private String manufacturingPlace;
-    private String conservatingPlace;
+    private String conservationPlace;
+    private String link;
+
+    @OneToMany(mappedBy = "manuscript")
+    private List<Folio> folios;
+
+    @JsonIgnoreProperties("manuscripts")
+    @ManyToMany(mappedBy = "manuscripts")
+    private List<Tag> tags;
 
     // Constructors, getters, and setters
 
@@ -41,6 +55,13 @@ public class Manuscript {
         this.cote = cote;
     }
 
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public String getTheme() {
         return theme;
     }
@@ -55,13 +76,20 @@ public class Manuscript {
         this.manuscriptName = manuscriptName;
     }
 
-    public String getDate() {
-        return date;
+    public String getSupport() {
+        return support;
     }
-    public void setDate(String date) {
-        this.date = date;
+    public void setSupport(String support) {
+        this.support = support;
     }
 
+    public String getDimension() {
+        return dimension;
+    }
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+    
     public String getManufacturingPlace() {
         return manufacturingPlace;
     }
@@ -69,10 +97,25 @@ public class Manuscript {
         this.manufacturingPlace = manufacturingPlace;
     }
 
-    public String getConservatingPlace() {
-        return conservatingPlace;
+    public String getConservationPlace() {
+        return conservationPlace;
     }
-    public void setConservatingPlace(String conservatingPlace) {
-        this.conservatingPlace = conservatingPlace;
+    public void setConservationPlace(String conservationPlace) {
+        this.conservationPlace = conservationPlace;
     }
+
+    public String getLink() {
+        return link;
+    }
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public List<Tag> getTags() {
+    return tags;
+    }
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
 }
