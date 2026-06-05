@@ -9,7 +9,6 @@ public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     
     // Constructors, getters, and setters
@@ -27,4 +26,5 @@ public class Place {
     public void setName(String name) {
         this.name = name;
     }
+
 }

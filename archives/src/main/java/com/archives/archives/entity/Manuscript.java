@@ -20,10 +20,20 @@ public class Manuscript {
     private String theme;
     private String support;
     private String dimension;
-    private String manuscriptName;
-    private String manufacturingPlace;
-    private String conservationPlace;
     private String link;
+    private String manuscriptName;
+
+    private Person author;
+    private Person translator;
+    private Person illuminator;
+    private Person recipient;
+
+
+    @ManyToOne
+    private Place manufacturingPlace;
+
+    @ManyToOne
+    private Place conservationPlace;
 
     @OneToMany(mappedBy = "manuscript")
     private List<Folio> folios;
@@ -69,7 +79,7 @@ public class Manuscript {
         this.theme = theme;
     }
 
-        public String getManuscriptName() {
+    public String getManuscriptName() {
         return manuscriptName;
     }
     public void setManuscriptName(String manuscriptName) {
@@ -89,18 +99,46 @@ public class Manuscript {
     public void setDimension(String dimension) {
         this.dimension = dimension;
     }
+
+    public Person getAuthor() {
+        return author;
+    }
+    public void setAuthor(Person author) {
+        this.author = author;
+    }
+
+    public Person getTranslator() {
+        return translator;
+    }
+    public void setTranslator(Person translator) {
+        this.translator = translator;
+    }
+
+    public Person getIlluminator() {
+        return illuminator;
+    }
+    public void setIlluminator(Person illuminator) {
+        this.illuminator = illuminator;
+    }
+
+    public Person getRecipient() {
+        return recipient;
+    }
+    public void setRecipient(Person recipient) {
+        this.recipient = recipient;
+    }
     
-    public String getManufacturingPlace() {
+    public Place getManufacturingPlace() {
         return manufacturingPlace;
     }
-    public void setManufacturingPlace(String manufacturingPlace) {
+    public void setManufacturingPlace(Place manufacturingPlace) {
         this.manufacturingPlace = manufacturingPlace;
     }
 
-    public String getConservationPlace() {
+    public Place getConservationPlace() {
         return conservationPlace;
     }
-    public void setConservationPlace(String conservationPlace) {
+    public void setConservationPlace(Place conservationPlace) {
         this.conservationPlace = conservationPlace;
     }
 

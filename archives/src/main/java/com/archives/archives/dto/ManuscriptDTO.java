@@ -5,6 +5,7 @@ import java.util.List;
 public class ManuscriptDTO {
 
     private Long id;
+
     private String title;
     private String cote;
     private String date;
@@ -12,9 +13,16 @@ public class ManuscriptDTO {
     private String manuscriptName;
     private String support;
     private String dimension;
-    private String manufacturingPlace;
-    private String conservationPlace;
     private String link;
+
+    private PersonDTO author;
+    private PersonDTO translator;
+    private PersonDTO illuminator;
+    private PersonDTO recipient;
+
+    private PlaceDTO manufacturingPlace;
+    private PlaceDTO conservationPlace;
+
 
     private List<TagDTO> tags;
     private List<FolioDTO> folios;
@@ -76,25 +84,53 @@ public class ManuscriptDTO {
         this.dimension = dimension;
     }
 
-    public String getManufacturingPlace() {
-        return manufacturingPlace;
-    }
-    public void setManufacturingPlace(String manufacturingPlace) {
-        this.manufacturingPlace = manufacturingPlace;
-    }
-
-    public String getConservationPlace() {
-        return conservationPlace;
-    }
-    public void setConservationPlace(String conservationPlace) {
-        this.conservationPlace = conservationPlace;
-    }
-
     public String getLink() {
         return link;
     }
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public PersonDTO getAuthor() {
+        return author;
+    }
+    public void setAuthor(PersonDTO author) {
+        this.author = author;
+    }
+
+    public PersonDTO getTranslator() {
+        return translator;
+    }
+    public void setTranslator(PersonDTO translator) {
+        this.translator = translator;
+    }
+
+    public PersonDTO getIlluminator() {
+        return illuminator;
+    }
+    public void setIlluminator(PersonDTO illuminator) {
+        this.illuminator = illuminator;
+    }
+
+    public PersonDTO getRecipient() {
+        return recipient;
+    }
+    public void setRecipient(PersonDTO recipient) {
+        this.recipient = recipient;
+    }
+
+    public PlaceDTO getManufacturingPlace() {
+        return manufacturingPlace;
+    }
+    public void setManufacturingPlace(PlaceDTO manufacturingPlace) {
+        this.manufacturingPlace = manufacturingPlace;
+    }
+
+    public PlaceDTO getConservationPlace() {
+        return conservationPlace;
+    }
+    public void setConservationPlace(PlaceDTO conservationPlace) {
+        this.conservationPlace = conservationPlace;
     }
 
     public List<TagDTO> getTags() {

@@ -1,15 +1,8 @@
-package com.archives.archives.entity;
+package com.archives.archives.dto;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "persons")
-public class Person {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PlaceDTO {
+    
     private Long id;
-
     private String name;
 
     // Constructors, getters, and setters

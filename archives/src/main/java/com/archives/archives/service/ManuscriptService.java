@@ -1,10 +1,13 @@
 package com.archives.archives.service;
 
 import com.archives.archives.dto.ManuscriptDTO;
+import com.archives.archives.dto.PlaceDTO;
 import com.archives.archives.entity.Manuscript;
+import com.archives.archives.entity.Place;
 import com.archives.archives.dto.FolioDTO;
 import com.archives.archives.dto.TagDTO;
 import com.archives.archives.repository.ManuscriptRepository;
+import com.archives.archives.repository.PlaceRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -14,14 +17,30 @@ import java.util.List;
 public class ManuscriptService {
 
     private final ManuscriptRepository repository;
+    private final PlaceRepository placeRepository;
 
-    public ManuscriptService(ManuscriptRepository repository) {
+    private PlaceDTO toPlaceDTO(Place place) {
+    if (place == null) return null;
+
+    PlaceDTO dto = new PlaceDTO();
+    dto.setId(place.getId());
+    dto.setName(place.getName());
+
+    return dto;
+}
+
+    public ManuscriptService(ManuscriptRepository repository, PlaceRepository placeRepository) {
         this.repository = repository;
+        this.placeRepository = placeRepository;
     }
 
     // GET ALL
     public List<ManuscriptDTO> getAll() {
-        return repository.findAll()
+        // Avec la méthode findAllWithRelations() qui utilise 
+        // des JOIN FETCH, on récupère tous les manuscrits avec 
+        // leurs relations en une seule requête, ce qui évite le 
+        // problème de N+1.
+        return repository.findAllWithRelations()
                 .stream()
                 .map(this::toDTO)
                 .toList();
@@ -52,8 +71,8 @@ public class ManuscriptService {
         existing.setSupport(dto.getSupport());
         existing.setDimension(dto.getDimension());
         existing.setManuscriptName(dto.getManuscriptName());
-        existing.setManufacturingPlace(dto.getManufacturingPlace());
-        existing.setConservationPlace(dto.getConservationPlace());
+        existing.setManufacturingPlace(toPlaceEntity(dto.getManufacturingPlace()));
+        existing.setConservationPlace(toPlaceEntity(dto.getConservationPlace()));
         existing.setLink(dto.getLink());
 
         return toDTO(repository.save(existing));
@@ -64,12 +83,30 @@ public class ManuscriptService {
         repository.deleteById(id);
     }
 
-
     // =================================================
     // MAPPING ENTITY ↔ DTO
-    // Prépare les données pour l'affichage (DTO) 
-    // ou pour l'enregistrement en base de données (Entity) 
+    // Prépare les données pour l'affichage (DTO)
+    // ou pour l'enregistrement en base de données (Entity)
     // =================================================
+
+    public Place toPlaceEntity(PlaceDTO placeDTO) {
+        if (placeDTO == null)
+            return null;
+
+        // Si le DTO contient un ID,
+        // on suppose que c'est une entité déjà existante
+        if (placeDTO.getId() != null) {
+            return placeRepository.findById(placeDTO.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Place not found with id: " + placeDTO.getId()));
+        }
+
+        // Sinon, on crée une nouvelle entité à partir du DTO
+        Place place = new Place();
+        place.setName(placeDTO.getName());
+        return place;
+
+    }
+
     public ManuscriptDTO toDTO(Manuscript m) {
         ManuscriptDTO dto = new ManuscriptDTO();
 
@@ -79,51 +116,48 @@ public class ManuscriptService {
         dto.setTheme(m.getTheme());
         dto.setManuscriptName(m.getManuscriptName());
         dto.setDate(m.getDate());
-        dto.setManufacturingPlace(m.getManufacturingPlace());
-        dto.setConservationPlace(m.getConservationPlace());
         dto.setLink(m.getLink());
         dto.setSupport(m.getSupport());
         dto.setDimension(m.getDimension());
-
-        if(m.getTags() != null) {
+        dto.setManufacturingPlace(toPlaceDTO(m.getManufacturingPlace()));
+        dto.setConservationPlace(toPlaceDTO(m.getConservationPlace()));
+        
+        if (m.getTags() != null) {
             dto.setTags(
-                m.getTags()
-                    .stream()
-                    .map(tag -> {
-                        TagDTO tagDTO = new TagDTO();
-                        tagDTO.setId(tag.getId());
-                        tagDTO.setName(tag.getName());
-                        return tagDTO;
-                    })
-                    .toList()
-            );
+                    m.getTags()
+                            .stream()
+                            .map(tag -> {
+                                TagDTO tagDTO = new TagDTO();
+                                tagDTO.setId(tag.getId());
+                                tagDTO.setName(tag.getName());
+                                return tagDTO;
+                            })
+                            .toList());
         }
-
-        if(m.getFolios() != null) {
+        if (m.getFolios() != null) {
             dto.setFolios(
-                m.getFolios()
-                    .stream()
-                    .map(folio -> {
-                        FolioDTO folioDTO = new FolioDTO();
-                        folioDTO.setId(folio.getId());
-                        folioDTO.setPage(folio.getPage());
-                        folioDTO.setFolio(folio.getFolio());
-                        folioDTO.setSectionName(folio.getSectionName());
-                        folioDTO.setIlluminationPosition(folio.getIlluminationPosition());
-                        folioDTO.setTranscription(folio.getTranscription());
-                        folioDTO.setZoom(folio.getZoom());
-                        folioDTO.setIlluminationType(folio.getIlluminationType());
-                        folioDTO.setDescription(folio.getDescription());
-                        return folioDTO;
-                    })
-                    .toList()
-            );
+                    m.getFolios()
+                            .stream()
+                            .map(folio -> {
+                                FolioDTO folioDTO = new FolioDTO();
+                                folioDTO.setId(folio.getId());
+                                folioDTO.setPage(folio.getPage());
+                                folioDTO.setFolio(folio.getFolio());
+                                folioDTO.setSectionName(folio.getSectionName());
+                                folioDTO.setIlluminationPosition(folio.getIlluminationPosition());
+                                folioDTO.setTranscription(folio.getTranscription());
+                                folioDTO.setZoom(folio.getZoom());
+                                folioDTO.setIlluminationType(folio.getIlluminationType());
+                                folioDTO.setDescription(folio.getDescription());
+                                return folioDTO;
+                            })
+                            .toList());
         }
 
         return dto;
     }
 
-    // Convertit un DTO en Entity pour l'enregistrement 
+    // Convertit un DTO en Entity pour l'enregistrement
     // en base de données
     public Manuscript toEntity(ManuscriptDTO dto) {
         Manuscript m = new Manuscript();
@@ -133,8 +167,8 @@ public class ManuscriptService {
         m.setTheme(dto.getTheme());
         m.setManuscriptName(dto.getManuscriptName());
         m.setDate(dto.getDate());
-        m.setManufacturingPlace(dto.getManufacturingPlace());
-        m.setConservationPlace(dto.getConservationPlace());
+        m.setManufacturingPlace(toPlaceEntity(dto.getManufacturingPlace()));
+        m.setConservationPlace(toPlaceEntity(dto.getConservationPlace()));
         m.setLink(dto.getLink());
         m.setSupport(dto.getSupport());
         m.setDimension(dto.getDimension());
