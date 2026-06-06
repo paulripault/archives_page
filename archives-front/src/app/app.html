@@ -10,17 +10,19 @@
       <div class="row">
         <span class="side left"></span>
         <select>
-          <option>All Categories</option>
-          <option>Category 1</option>
+          <option>Sélectionner un manuscrit</option>
+          @for (m of manuscripts; track m.id) {
+          <option [value]="m.id">{{ m.title }}</option>
+          }
         </select>
         <span class="side right">OU LÀ</span>
       </div>
     </div>
 
-    <div class="results" *ngIf="hasQuery">
-      <div class="cards" *ngFor="let item of results">
-        {{item.title}}
-      </div>
+    <div class="results">
+      @for (m of manuscripts; track m.id) {
+        {{ m.title }}
+      }
     </div>
   </div>
 </main>
