@@ -23,9 +23,20 @@ public class Manuscript {
     private String link;
     private String manuscriptName;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
     private Person author;
+
+    @ManyToOne
+    @JoinColumn(name = "translator_id")
     private Person translator;
+
+    @ManyToOne
+    @JoinColumn(name = "illuminator_id")
     private Person illuminator;
+
+    @ManyToOne
+    @JoinColumn(name = "recipient_id")
     private Person recipient;
 
 
