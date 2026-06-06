@@ -1,8 +1,6 @@
 package com.archives.archives.entity;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Set;
 
 import jakarta.persistence.*;
 
@@ -46,12 +44,11 @@ public class Manuscript {
     @ManyToOne
     private Place conservationPlace;
 
-    @OneToMany(mappedBy = "manuscript")
-    private List<Folio> folios;
+    @OneToMany(mappedBy = "manuscript", fetch = FetchType.LAZY)
+    private Set<Folio> folios;
 
-    @JsonIgnoreProperties("manuscripts")
-    @ManyToMany(mappedBy = "manuscripts")
-    private List<Tag> tags;
+    @OneToMany(mappedBy = "manuscripts", fetch = FetchType.LAZY)
+    private Set<Tag> tags;
 
     // Constructors, getters, and setters
 
@@ -160,17 +157,17 @@ public class Manuscript {
         this.link = link;
     }
 
-    public List<Folio> getFolios() {
+    public Set<Folio> getFolios() {
         return folios;
     }
-    public void setFolios(List<Folio> folios) {
+    public void setFolios(Set<Folio> folios) {
         this.folios = folios;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
     return tags;
     }
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 

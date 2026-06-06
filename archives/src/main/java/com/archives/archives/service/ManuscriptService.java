@@ -36,11 +36,7 @@ public class ManuscriptService {
 
     // GET ALL
     public List<ManuscriptDTO> getAll() {
-        // Avec la méthode findAllWithRelations() qui utilise 
-        // des JOIN FETCH, on récupère tous les manuscrits avec 
-        // leurs relations en une seule requête, ce qui évite le 
-        // problème de N+1.
-        return repository.findAllWithRelations()
+        return repository.findAll()
                 .stream()
                 .map(this::toDTO)
                 .toList();
