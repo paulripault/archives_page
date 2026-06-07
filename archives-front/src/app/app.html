@@ -9,7 +9,7 @@
       </div>
       <div class="row">
         <span class="side left"></span>
-        <select>
+        <select (change)="onManuscriptSelected($event)">
           <option>Sélectionner un manuscrit</option>
           @for (m of manuscripts; track m.id) {
           <option [value]="m.id">{{ m.title }}</option>
@@ -20,9 +20,7 @@
     </div>
 
     <div class="results">
-      @for (m of manuscripts; track m.id) {
-        {{ m.title }}
-      }
+      <app-manuscript-pannel [manuscript]="selectedManuscript"></app-manuscript-pannel>
     </div>
   </div>
 </main>
