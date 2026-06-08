@@ -60,6 +60,11 @@
         flex: 1;
         height: 4vh;
     }
+
+    .upload {
+        display: flex;
+        justify-content: center;
+    }
 }
 
 /* Style for the result cards */

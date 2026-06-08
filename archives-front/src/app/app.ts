@@ -1,12 +1,13 @@
 import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { ManuscriptService } from './features/manuscripts/services/manuscript.service';
 import { ManuscriptPannels } from './features/manuscripts/components/manuscript-pannels/manuscript-pannels';
+import { ManuscriptUpload } from './features/manuscripts/components/manuscript-upload/manuscript-upload/manuscript-upload';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
-  imports: [ManuscriptPannels],
+  imports: [ManuscriptPannels, ManuscriptUpload],
   standalone: true,
 })
 export class App implements OnInit {
@@ -34,6 +35,7 @@ export class App implements OnInit {
 
     this.manuscriptService.getById(id).subscribe(data => {
       this.selectedManuscript = data;
+      this.cdr.detectChanges()
       console.log(this.selectedManuscript);
     })
   }
