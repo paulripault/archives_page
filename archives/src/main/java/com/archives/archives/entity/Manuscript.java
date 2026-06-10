@@ -1,7 +1,6 @@
 package com.archives.archives.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -58,21 +57,21 @@ public class Manuscript {
         name = "manuscripts_person_tags", 
         joinColumns = @JoinColumn(name = "manuscript_id"), 
         inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> personTags = new ArrayList<>();
+    private Set<Tag> personTags = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
         name = "manuscripts_place_tags", 
         joinColumns = @JoinColumn(name = "manuscript_id"), 
         inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> placeTags = new ArrayList<>();
+    private Set<Tag> placeTags = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
         name = "manuscripts_word_tags", 
         joinColumns = @JoinColumn(name = "manuscript_id"), 
         inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> wordTags = new ArrayList<>();
+    private Set<Tag> wordTags = new HashSet<>();
 
     // Constructors, getters, and setters
 
@@ -204,27 +203,27 @@ public class Manuscript {
         this.folios = folios;
     }
 
-    public List<Tag> getPersonTags() {
+    public Set<Tag> getPersonTags() {
         return personTags;
     }
 
-    public void setPersonTags(List<Tag> personTags) {
+    public void setPersonTags(Set<Tag> personTags) {
         this.personTags = personTags;
     }
 
-    public List<Tag> getPlaceTags() {
+    public Set<Tag> getPlaceTags() {
         return placeTags;
     }
 
-    public void setPlaceTags(List<Tag> placeTags) {
+    public void setPlaceTags(Set<Tag> placeTags) {
         this.placeTags = placeTags;
     }
 
-    public List<Tag> getWordTags() {
+    public Set<Tag> getWordTags() {
         return wordTags;
     }
 
-    public void setWordTags(List<Tag> wordTags) {
+    public void setWordTags(Set<Tag> wordTags) {
         this.wordTags = wordTags;
     }
 

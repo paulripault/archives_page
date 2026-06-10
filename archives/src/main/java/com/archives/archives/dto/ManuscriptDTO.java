@@ -1,6 +1,6 @@
 package com.archives.archives.dto;
 
-import java.util.List;
+import java.util.Set;
 
 public class ManuscriptDTO {
 
@@ -24,10 +24,10 @@ public class ManuscriptDTO {
     private PlaceDTO conservationPlace;
 
 
-    private List<TagDTO> personTags;
-    private List<TagDTO> placeTags;
-    private List<TagDTO> wordTags;
-    private List<FolioDTO> folios;
+    private Set<TagDTO> personTags;
+    private Set<TagDTO> placeTags;
+    private Set<TagDTO> wordTags;
+    private Set<FolioDTO> folios;
 
     // Getters and setters (or use Lombok @Data for brevity)
     public Long getId() {
@@ -135,31 +135,31 @@ public class ManuscriptDTO {
         this.conservationPlace = conservationPlace;
     }
 
-    public List<TagDTO> getPersonTags() {
+    public Set<TagDTO> getPersonTags() {
     return personTags;
     }
-    public void setPersonTags(List<TagDTO> personTags) {
+    public void setPersonTags(Set<TagDTO> personTags) {
         this.personTags = personTags;
     }
 
-    public List<TagDTO> getPlaceTags() {
+    public Set<TagDTO> getPlaceTags() {
     return placeTags;
     }
-    public void setPlaceTags(List<TagDTO> placeTags) {
+    public void setPlaceTags(Set<TagDTO> placeTags) {
         this.placeTags = placeTags;
     }
 
-    public List<TagDTO> getWordTags() {
+    public Set<TagDTO> getWordTags() {
     return wordTags;
     }
-    public void setWordTags(List<TagDTO> wordTags) {
+    public void setWordTags(Set<TagDTO> wordTags) {
         this.wordTags = wordTags;
     }
 
-    public List<FolioDTO> getFolios() {
+    public Set<FolioDTO> getFolios() {
         return folios;
     }
-    public void setFolios(List<FolioDTO> folios) {
+    public void setFolios(Set<FolioDTO> folios) {
         this.folios = folios;
     }
 

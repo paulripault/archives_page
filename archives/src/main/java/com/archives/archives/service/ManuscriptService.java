@@ -13,6 +13,8 @@ import com.archives.archives.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ManuscriptService {
@@ -31,18 +33,18 @@ public class ManuscriptService {
         return dto;
     }
 
-    private List<TagDTO> mapTags(List<Tag> tags) {
-    if (tags == null) return List.of();
+    private Set<TagDTO> mapTags(Set<Tag> tags) {
+    if (tags == null) return Set.of();
 
     return tags.stream()
-            .map(tag -> {
-                TagDTO dto = new TagDTO();
-                dto.setId(tag.getId());
-                dto.setName(tag.getName());
-                return dto;
-            })
-            .toList();
-}
+        .map(tag -> {
+            TagDTO dto = new TagDTO();
+            dto.setId(tag.getId());
+            dto.setName(tag.getName());
+            return dto;
+        })
+        .collect(Collectors.toSet());
+    }
 
     public ManuscriptService(ManuscriptRepository repository, PlaceRepository placeRepository) {
         this.repository = repository;
@@ -51,7 +53,7 @@ public class ManuscriptService {
 
     // GET ALL
     public List<ManuscriptDTO> getAll() {
-        return repository.findAll()
+        return repository.findAllWithRelations()
                 .stream()
                 .map(this::toDTO)
                 .toList();
@@ -155,7 +157,7 @@ public class ManuscriptService {
                                 folioDTO.setDescription(folio.getDescription());
                                 return folioDTO;
                             })
-                            .toList());
+                            .collect(Collectors.toSet()));
         }
 
         return dto;
