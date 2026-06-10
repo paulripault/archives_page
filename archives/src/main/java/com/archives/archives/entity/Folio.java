@@ -14,11 +14,17 @@ public class Folio {
 
     private String page;
     private String folio;
+    
+    @Column(columnDefinition = "TEXT")
     private String sectionName;
     private String illuminationPosition;
+
+    @Column(columnDefinition = "TEXT")
     private String transcription;
     private String zoom;
     private String illuminationType;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @JsonIgnoreProperties({"folios"})
@@ -90,4 +96,12 @@ public class Folio {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Manuscript getManuscript() {
+        return manuscript;
+    }
+    public void setManuscript(Manuscript manuscript) {
+        this.manuscript = manuscript;
+    }
+
 }

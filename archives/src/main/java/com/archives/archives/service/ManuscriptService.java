@@ -4,6 +4,7 @@ import com.archives.archives.dto.ManuscriptDTO;
 import com.archives.archives.dto.PlaceDTO;
 import com.archives.archives.entity.Manuscript;
 import com.archives.archives.entity.Place;
+import com.archives.archives.entity.Tag;
 import com.archives.archives.dto.FolioDTO;
 import com.archives.archives.dto.TagDTO;
 import com.archives.archives.repository.ManuscriptRepository;
@@ -20,13 +21,27 @@ public class ManuscriptService {
     private final PlaceRepository placeRepository;
 
     private PlaceDTO toPlaceDTO(Place place) {
-    if (place == null) return null;
+        if (place == null)
+            return null;
 
-    PlaceDTO dto = new PlaceDTO();
-    dto.setId(place.getId());
-    dto.setName(place.getName());
+        PlaceDTO dto = new PlaceDTO();
+        dto.setId(place.getId());
+        dto.setName(place.getName());
 
-    return dto;
+        return dto;
+    }
+
+    private List<TagDTO> mapTags(List<Tag> tags) {
+    if (tags == null) return List.of();
+
+    return tags.stream()
+            .map(tag -> {
+                TagDTO dto = new TagDTO();
+                dto.setId(tag.getId());
+                dto.setName(tag.getName());
+                return dto;
+            })
+            .toList();
 }
 
     public ManuscriptService(ManuscriptRepository repository, PlaceRepository placeRepository) {
@@ -117,19 +132,12 @@ public class ManuscriptService {
         dto.setDimension(m.getDimension());
         dto.setManufacturingPlace(toPlaceDTO(m.getManufacturingPlace()));
         dto.setConservationPlace(toPlaceDTO(m.getConservationPlace()));
-        
-        if (m.getTags() != null) {
-            dto.setTags(
-                    m.getTags()
-                            .stream()
-                            .map(tag -> {
-                                TagDTO tagDTO = new TagDTO();
-                                tagDTO.setId(tag.getId());
-                                tagDTO.setName(tag.getName());
-                                return tagDTO;
-                            })
-                            .toList());
-        }
+
+        dto.setPersonTags(mapTags(m.getPersonTags()));
+        dto.setPlaceTags(mapTags(m.getPlaceTags()));
+        dto.setWordTags(mapTags(m.getWordTags()));
+
+
         if (m.getFolios() != null) {
             dto.setFolios(
                     m.getFolios()

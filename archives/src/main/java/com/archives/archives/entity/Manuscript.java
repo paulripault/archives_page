@@ -1,5 +1,7 @@
 package com.archives.archives.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -7,7 +9,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "manuscripts")
 public class Manuscript {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,10 +17,15 @@ public class Manuscript {
     private String title;
     private String cote;
     private String date;
+
+    @Column(columnDefinition = "TEXT")
     private String theme;
+
     private String support;
     private String dimension;
     private String link;
+
+    @Column(columnDefinition = "TEXT")
     private String manuscriptName;
 
     @ManyToOne
@@ -37,7 +44,6 @@ public class Manuscript {
     @JoinColumn(name = "recipient_id")
     private Person recipient;
 
-
     @ManyToOne
     private Place manufacturingPlace;
 
@@ -47,14 +53,33 @@ public class Manuscript {
     @OneToMany(mappedBy = "manuscript", fetch = FetchType.LAZY)
     private Set<Folio> folios;
 
-    @OneToMany(mappedBy = "manuscripts", fetch = FetchType.LAZY)
-    private Set<Tag> tags;
+    @ManyToMany
+    @JoinTable(
+        name = "manuscripts_person_tags", 
+        joinColumns = @JoinColumn(name = "manuscript_id"), 
+        inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> personTags = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "manuscripts_place_tags", 
+        joinColumns = @JoinColumn(name = "manuscript_id"), 
+        inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> placeTags = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "manuscripts_word_tags", 
+        joinColumns = @JoinColumn(name = "manuscript_id"), 
+        inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> wordTags = new ArrayList<>();
 
     // Constructors, getters, and setters
 
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -62,6 +87,7 @@ public class Manuscript {
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -69,6 +95,7 @@ public class Manuscript {
     public String getCote() {
         return cote;
     }
+
     public void setCote(String cote) {
         this.cote = cote;
     }
@@ -76,6 +103,7 @@ public class Manuscript {
     public String getDate() {
         return date;
     }
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -83,6 +111,7 @@ public class Manuscript {
     public String getTheme() {
         return theme;
     }
+
     public void setTheme(String theme) {
         this.theme = theme;
     }
@@ -90,6 +119,7 @@ public class Manuscript {
     public String getManuscriptName() {
         return manuscriptName;
     }
+
     public void setManuscriptName(String manuscriptName) {
         this.manuscriptName = manuscriptName;
     }
@@ -97,6 +127,7 @@ public class Manuscript {
     public String getSupport() {
         return support;
     }
+
     public void setSupport(String support) {
         this.support = support;
     }
@@ -104,6 +135,7 @@ public class Manuscript {
     public String getDimension() {
         return dimension;
     }
+
     public void setDimension(String dimension) {
         this.dimension = dimension;
     }
@@ -111,6 +143,7 @@ public class Manuscript {
     public Person getAuthor() {
         return author;
     }
+
     public void setAuthor(Person author) {
         this.author = author;
     }
@@ -118,6 +151,7 @@ public class Manuscript {
     public Person getTranslator() {
         return translator;
     }
+
     public void setTranslator(Person translator) {
         this.translator = translator;
     }
@@ -125,6 +159,7 @@ public class Manuscript {
     public Person getIlluminator() {
         return illuminator;
     }
+
     public void setIlluminator(Person illuminator) {
         this.illuminator = illuminator;
     }
@@ -132,13 +167,15 @@ public class Manuscript {
     public Person getRecipient() {
         return recipient;
     }
+
     public void setRecipient(Person recipient) {
         this.recipient = recipient;
     }
-    
+
     public Place getManufacturingPlace() {
         return manufacturingPlace;
     }
+
     public void setManufacturingPlace(Place manufacturingPlace) {
         this.manufacturingPlace = manufacturingPlace;
     }
@@ -146,6 +183,7 @@ public class Manuscript {
     public Place getConservationPlace() {
         return conservationPlace;
     }
+
     public void setConservationPlace(Place conservationPlace) {
         this.conservationPlace = conservationPlace;
     }
@@ -153,6 +191,7 @@ public class Manuscript {
     public String getLink() {
         return link;
     }
+
     public void setLink(String link) {
         this.link = link;
     }
@@ -160,15 +199,33 @@ public class Manuscript {
     public Set<Folio> getFolios() {
         return folios;
     }
+
     public void setFolios(Set<Folio> folios) {
         this.folios = folios;
     }
 
-    public Set<Tag> getTags() {
-    return tags;
+    public List<Tag> getPersonTags() {
+        return personTags;
     }
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
+
+    public void setPersonTags(List<Tag> personTags) {
+        this.personTags = personTags;
+    }
+
+    public List<Tag> getPlaceTags() {
+        return placeTags;
+    }
+
+    public void setPlaceTags(List<Tag> placeTags) {
+        this.placeTags = placeTags;
+    }
+
+    public List<Tag> getWordTags() {
+        return wordTags;
+    }
+
+    public void setWordTags(List<Tag> wordTags) {
+        this.wordTags = wordTags;
     }
 
 }

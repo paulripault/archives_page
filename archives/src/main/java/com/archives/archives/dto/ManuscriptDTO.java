@@ -2,8 +2,6 @@ package com.archives.archives.dto;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class ManuscriptDTO {
 
     private Long id;
@@ -26,9 +24,9 @@ public class ManuscriptDTO {
     private PlaceDTO conservationPlace;
 
 
-    @JsonIgnore
-    private List<TagDTO> tags;
-    @JsonIgnore
+    private List<TagDTO> personTags;
+    private List<TagDTO> placeTags;
+    private List<TagDTO> wordTags;
     private List<FolioDTO> folios;
 
     // Getters and setters (or use Lombok @Data for brevity)
@@ -137,11 +135,25 @@ public class ManuscriptDTO {
         this.conservationPlace = conservationPlace;
     }
 
-    public List<TagDTO> getTags() {
-        return tags;
+    public List<TagDTO> getPersonTags() {
+    return personTags;
     }
-    public void setTags(List<TagDTO> tags) {
-        this.tags = tags;
+    public void setPersonTags(List<TagDTO> personTags) {
+        this.personTags = personTags;
+    }
+
+    public List<TagDTO> getPlaceTags() {
+    return placeTags;
+    }
+    public void setPlaceTags(List<TagDTO> placeTags) {
+        this.placeTags = placeTags;
+    }
+
+    public List<TagDTO> getWordTags() {
+    return wordTags;
+    }
+    public void setWordTags(List<TagDTO> wordTags) {
+        this.wordTags = wordTags;
     }
 
     public List<FolioDTO> getFolios() {
