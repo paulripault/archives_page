@@ -74,21 +74,6 @@ select:focus {
     outline: 3px solid rgba(127, 107, 69, 0.18);
 }
 
-select:disabled {
-    cursor: not-allowed;
-    opacity: 0.65;
-}
-
-.status-message {
-    margin: 0;
-    color: #6b5e4a;
-    font-weight: 500;
-}
-
-.error-message {
-    color: #9f1239;
-}
-
 .results {
     margin-top: 24px;
 }

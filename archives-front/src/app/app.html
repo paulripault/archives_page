@@ -9,7 +9,7 @@
       <div class="search-actions">
         <label class="select-field">
           <span>Manuscrit</span>
-          <select [disabled]="isLoadingManuscripts || !!errorMessage" (change)="onManuscriptSelected($event)">
+          <select (change)="onManuscriptSelected($event)">
             <option value="">Sélectionner un manuscrit</option>
 
             @for (m of manuscripts; track m.id) {
@@ -22,14 +22,6 @@
 
         <app-manuscript-upload></app-manuscript-upload>
       </div>
-
-      @if (isLoadingManuscripts) {
-        <p class="status-message">Chargement des manuscrits...</p>
-      }
-
-      @if (errorMessage) {
-        <p class="status-message error-message">{{ errorMessage }}</p>
-      }
     </div>
 
     <div class="results">

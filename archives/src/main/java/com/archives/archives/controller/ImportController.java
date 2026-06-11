@@ -2,16 +2,13 @@ package com.archives.archives.controller;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.archives.archives.entity.Folio;
 import com.archives.archives.entity.Manuscript;
@@ -30,8 +27,6 @@ import com.opencsv.exceptions.CsvValidationException;
 @RequestMapping("/imports")
 public class ImportController {
 
-    private static final int EXPECTED_COLUMN_COUNT = 25;
-
     private final ManuscriptRepository manuscriptRepository;
     private final PersonRepository personRepository;
     private final FolioRepository folioRepository;
@@ -39,31 +34,19 @@ public class ImportController {
     private final TagRepository tagRepository;
 
     private Person getOrCreatePerson(String name) {
-        if (name == null || name.isBlank()) {
-            return null;
-        }
-
-        String cleanName = name.trim().toLowerCase();
-
-        return personRepository.findByName(cleanName)
+        return personRepository.findByName(name)
                 .orElseGet(() -> {
                     Person p = new Person();
-                    p.setName(cleanName);
+                    p.setName(name);
                     return personRepository.save(p);
                 });
     }
 
     private Place getOrCreatePlace(String name) {
-        if (name == null || name.isBlank()) {
-            return null;
-        }
-
-        String cleanName = name.trim();
-
-        return placeRepository.findByName(cleanName)
+        return placeRepository.findByName(name)
                 .orElseGet(() -> {
                     Place p = new Place();
-                    p.setName(cleanName);
+                    p.setName(name);
                     return placeRepository.save(p);
                 });
     }
@@ -100,129 +83,101 @@ public class ImportController {
     @PostMapping("/csv")
     @Transactional
     public String uploadCsv(@RequestParam("file") MultipartFile file) throws IOException, CsvValidationException {
-        if (file == null || file.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le fichier CSV est vide.");
-        }
-
-        int importedRows = 0;
 
         try (
                 CSVReader reader = new CSVReader(
-                        new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));) {
+                        new InputStreamReader(file.getInputStream()));) {
 
-            String[] headers = reader.readNext();
-            if (headers == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le fichier CSV ne contient pas d'en-tête.");
-            }
+            reader.readNext();
 
             String[] columns;
-            int rowNumber = 1;
 
             while ((columns = reader.readNext()) != null) {
-                rowNumber++;
-                validateRow(columns, rowNumber);
+                System.out.println(columns.length);
 
                 // Gestion des personnes
-                String authorName = getColumn(columns, 8);
-                String illuminatorName = getColumn(columns, 9);
-                String translatorName = getColumn(columns, 10);
-                String recipientName = getColumn(columns, 11);
+                String authorName = columns[8] == null ? "" : columns[8].trim().toLowerCase();
+                String translatorName = columns[9] == null ? "" : columns[9].trim().toLowerCase();
+                String illuminatorName = columns[10] == null ? "" : columns[10].trim().toLowerCase();
+                String recipientName = columns[11] == null ? "" : columns[11].trim().toLowerCase();
 
                 // Gestion des lieux
-                String manufacturingPlaceName = getColumn(columns, 5);
-                String conservationPlaceName = getColumn(columns, 13);
+                String manufacturingPlaceName = columns[5] == null ? "" : columns[5].trim();
+                String conservationPlaceName = columns[13] == null ? "" : columns[13].trim();
 
                 Place manufacturingPlace = getOrCreatePlace(manufacturingPlaceName);
                 Place conservationPlace = getOrCreatePlace(conservationPlaceName);
 
-                String title = getColumn(columns, 0);
-                String cote = getColumn(columns, 1);
-                String link = getColumn(columns, 24);
-                Manuscript manuscript = link.isBlank()
-                        ? manuscriptRepository.findFirstByTitleAndCoteOrderByIdAsc(title, cote)
-                                .orElseGet(Manuscript::new)
-                        : manuscriptRepository.findFirstByLinkOrderByIdAsc(link)
-                                .orElseGet(Manuscript::new);
+                String cote = columns[1].trim();
+                Manuscript manuscript = manuscriptRepository.findFirstByCoteOrderByIdAsc(cote)
+                        .orElseGet(Manuscript::new);
 
                 // Enregistrement des manuscrits
-                manuscript.setTitle(title);
+                manuscript.setTitle(columns[0].trim());
                 manuscript.setCote(cote);
-                manuscript.setTheme(getColumn(columns, 2));
-                manuscript.setManuscriptName(getColumn(columns, 3));
+                manuscript.setTheme(columns[2].trim());
+                manuscript.setManuscriptName(columns[3].trim());
 
-                manuscript.setSupport(getColumn(columns, 6));
-                manuscript.setDimension(getColumn(columns, 7));
+                manuscript.setSupport(columns[6].trim());
+                manuscript.setDimension(columns[7].trim());
 
-                manuscript.setDate(getColumn(columns, 12));
-                manuscript.setLink(link);
+                manuscript.setDate(columns[12].trim());
+                manuscript.setLink(columns[24].trim());
 
-                manuscript.setAuthor(getOrCreatePerson(authorName));
-                manuscript.setTranslator(getOrCreatePerson(translatorName));
-                manuscript.setIlluminator(getOrCreatePerson(illuminatorName));
-                manuscript.setRecipient(getOrCreatePerson(recipientName));
+                if (!authorName.isBlank()) {
+                    manuscript.setAuthor(getOrCreatePerson(authorName));
+                }
+                if (!translatorName.isBlank()) {
+                    manuscript.setTranslator(getOrCreatePerson(translatorName));
+                }
+                if (!illuminatorName.isBlank()) {
+                    manuscript.setIlluminator(getOrCreatePerson(illuminatorName));
+                }
+                if (!recipientName.isBlank()) {
+                    manuscript.setRecipient(getOrCreatePerson(recipientName));
+                }
 
                 manuscript.setManufacturingPlace(manufacturingPlace);
                 manuscript.setConservationPlace(conservationPlace);
 
                 // Gestion des tags
-                Tag person = getOrCreateTag(getColumn(columns, 21));
+                Tag person = getOrCreateTag(columns[21]);
                 if (person != null)
                     manuscript.getPersonTags().add(person);
 
-                Tag place = getOrCreateTag(getColumn(columns, 22));
+                Tag place = getOrCreateTag(columns[22]);
                 if (place != null)
                     manuscript.getPlaceTags().add(place);
 
-                Tag word = getOrCreateTag(getColumn(columns, 23));
+                Tag word = getOrCreateTag(columns[23]);
                 if (word != null)
                     manuscript.getWordTags().add(word);
 
                 manuscript = manuscriptRepository.save(manuscript);
 
-                String page = getColumn(columns, 4);
-                String folioName = getColumn(columns, 16);
+                String page = columns[4].trim();
+                String folioName = columns[16].trim();
                 Folio folio = folioRepository.findByManuscriptAndPageAndFolio(manuscript, page, folioName)
                         .orElseGet(Folio::new);
 
                 // Enregistrement des folios
-                folio.setPage(page);
-                folio.setFolio(folioName);
-                folio.setSectionName(getColumn(columns, 14));
-                folio.setIlluminationPosition(getColumn(columns, 15));
-                folio.setTranscription(getColumn(columns, 18));
-                folio.setZoom(getColumn(columns, 17));
-                folio.setIlluminationType(getColumn(columns, 19));
-                folio.setDescription(getColumn(columns, 20));
+                folio.setPage(columns[4]);
+                folio.setFolio(columns[16]);
+                folio.setSectionName(columns[14]);
+                folio.setIlluminationPosition(columns[15]);
+                folio.setTranscription(columns[18]);
+                folio.setZoom(columns[17]);
+                folio.setIlluminationType(columns[19]);
+                folio.setDescription(columns[20]);
 
                 folio.setManuscript(manuscript);
                 folioRepository.save(folio);
-                importedRows++;
+
+                System.out.println(manuscript);
+                System.out.println(folio);
             }
         }
-        return "Import terminé : " + importedRows + " ligne(s) traitée(s).";
-    }
-
-    private void validateRow(String[] columns, int rowNumber) {
-        if (columns.length < EXPECTED_COLUMN_COUNT) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Ligne " + rowNumber + " invalide : " + columns.length + " colonne(s) au lieu de "
-                            + EXPECTED_COLUMN_COUNT + ".");
-        }
-
-        if (getColumn(columns, 0).isBlank() || getColumn(columns, 1).isBlank()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Ligne " + rowNumber + " invalide : le titre et la cote sont obligatoires.");
-        }
-    }
-
-    private String getColumn(String[] columns, int index) {
-        if (index >= columns.length || columns[index] == null) {
-            return "";
-        }
-
-        return columns[index].trim();
+        return "Ok";
     }
 
 }

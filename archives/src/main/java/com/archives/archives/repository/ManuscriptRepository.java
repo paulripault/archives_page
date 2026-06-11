@@ -11,9 +11,7 @@ import com.archives.archives.entity.Manuscript;
 
 public interface ManuscriptRepository extends JpaRepository<Manuscript, Long> {
 
-    Optional<Manuscript> findFirstByLinkOrderByIdAsc(String link);
-
-    Optional<Manuscript> findFirstByTitleAndCoteOrderByIdAsc(String title, String cote);
+    Optional<Manuscript> findFirstByCoteOrderByIdAsc(String cote);
 
     @Query("SELECT m FROM Manuscript m")
     @EntityGraph(attributePaths = {
