@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.archives.archives.entity.Folio;
 import com.archives.archives.entity.Manuscript;
@@ -80,6 +81,7 @@ public class ImportController {
     }
 
     @PostMapping("/csv")
+    @Transactional
     public String uploadCsv(@RequestParam("file") MultipartFile file) throws IOException, CsvValidationException {
 
         try (
@@ -92,9 +94,6 @@ public class ImportController {
 
             while ((columns = reader.readNext()) != null) {
                 System.out.println(columns.length);
-
-                Manuscript manuscript = new Manuscript();
-                Folio folio = new Folio();
 
                 // Gestion des personnes
                 String authorName = columns[8] == null ? "" : columns[8].trim().toLowerCase();
@@ -109,9 +108,13 @@ public class ImportController {
                 Place manufacturingPlace = getOrCreatePlace(manufacturingPlaceName);
                 Place conservationPlace = getOrCreatePlace(conservationPlaceName);
 
+                String cote = columns[1].trim();
+                Manuscript manuscript = manuscriptRepository.findFirstByCoteOrderByIdAsc(cote)
+                        .orElseGet(Manuscript::new);
+
                 // Enregistrement des manuscrits
                 manuscript.setTitle(columns[0].trim());
-                manuscript.setCote(columns[1].trim());
+                manuscript.setCote(cote);
                 manuscript.setTheme(columns[2].trim());
                 manuscript.setManuscriptName(columns[3].trim());
 
@@ -150,6 +153,13 @@ public class ImportController {
                 if (word != null)
                     manuscript.getWordTags().add(word);
 
+                manuscript = manuscriptRepository.save(manuscript);
+
+                String page = columns[4].trim();
+                String folioName = columns[16].trim();
+                Folio folio = folioRepository.findByManuscriptAndPageAndFolio(manuscript, page, folioName)
+                        .orElseGet(Folio::new);
+
                 // Enregistrement des folios
                 folio.setPage(columns[4]);
                 folio.setFolio(columns[16]);
@@ -160,7 +170,6 @@ public class ImportController {
                 folio.setIlluminationType(columns[19]);
                 folio.setDescription(columns[20]);
 
-                manuscriptRepository.save(manuscript);
                 folio.setManuscript(manuscript);
                 folioRepository.save(folio);
 

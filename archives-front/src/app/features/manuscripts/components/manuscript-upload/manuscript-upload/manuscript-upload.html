@@ -1,6 +1,32 @@
 <div class="content">
-    <button title="Le fichier CSV c'est ici !" matFab extended>
+    <button title="Le fichier CSV c'est ici !" matFab extended type="button" (click)="csvInput.click()">
         <mat-icon>upload</mat-icon> 
         Importer
     </button>
+
+    <input
+        #csvInput
+        class="file-input"
+        type="file"
+        accept=".csv,text/csv"
+        (change)="onFileSelected($event)"
+    />
+
+    @if (message) {
+        <p class="message">{{ message }}</p>
+    }
 </div>
+
+@if (isUploading) {
+    <div class="loading-overlay">
+        <div class="loading-content">
+            <mat-spinner diameter="56"></mat-spinner>
+            <div class="loading-text">
+                <p>Chargement de la nouvelle Base de donnée en cours</p>
+                <p class="loading-help">
+                    Cela peut prendre un peu de temps<span class="loading-dots"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+}

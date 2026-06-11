@@ -5,6 +5,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Cause:wght@100..900&display=swap');
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
 body {
-    background-color: #FFB5B5;
+    min-height: 100%;
+    margin: 0;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.4)),
+        #efe7d8;
+    color: #25211a;
+    font-family: 'Cause', Roboto, Arial, sans-serif;
+}
+
+button,
+select,
+input {
+    font-family: inherit;
 }

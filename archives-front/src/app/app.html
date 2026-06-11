@@ -1,26 +1,25 @@
 <main class="main">
   <div class="content">
     <div class="search-section">
-      <h1>RECHERCHER UN DOCUMENT</h1>
-      <div class="row">
-        <span class="side left">ICI</span>
-        <div class="row">
-          <span class="side left"></span>
-          <select (change)="onManuscriptSelected($event)">
-            <option>Sélectionner un manuscrit</option>
-
-            @for (m of manuscripts; track m.id) {
-            <option [value]="m.id">
-              {{ m.title }}
-            </option>
-            }
-            
-          </select>
-        </div>
-        <span class="side right"></span>
+      <div class="search-header">
+        <p class="eyebrow">Archives manuscrites</p>
+        <h1>Rechercher un document</h1>
       </div>
 
-      <div class="upload">
+      <div class="search-actions">
+        <label class="select-field">
+          <span>Manuscrit</span>
+          <select (change)="onManuscriptSelected($event)">
+            <option value="">Sélectionner un manuscrit</option>
+
+            @for (m of manuscripts; track m.id) {
+              <option [value]="m.id">
+                {{ m.title }}
+              </option>
+            }
+          </select>
+        </label>
+
         <app-manuscript-upload></app-manuscript-upload>
       </div>
     </div>
