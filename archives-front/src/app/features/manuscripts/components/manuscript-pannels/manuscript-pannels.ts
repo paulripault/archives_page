@@ -2,11 +2,19 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 
+type DisplayField = {
+  label: string;
+  key: string;
+};
+
+type Entry = {
+  label: string;
+  value: string | number;
+};
+
 @Component({
   selector: 'app-manuscript-pannel',
-  imports: [
-    MatExpansionModule,
-    CommonModule],
+  imports: [MatExpansionModule, CommonModule],
   templateUrl: './manuscript-pannels.html',
   styleUrl: './manuscript-pannels.css',
 })
@@ -14,7 +22,7 @@ export class ManuscriptPannels {
 
   @Input() manuscript: any;
 
-  displayFields = [
+  readonly displayFields: DisplayField[] = [
     { label: 'Titre', key: 'title' },
     { label: 'Cote', key: 'cote' },
     { label: 'Theme du manuscrit', key: 'theme' },
@@ -41,7 +49,7 @@ export class ManuscriptPannels {
     { label: 'Liens', key: 'link' },
   ];
 
-  get entries() {
+  get entries(): Entry[] {
     if (!this.manuscript) return [];
 
     return this.displayFields
@@ -49,7 +57,7 @@ export class ManuscriptPannels {
         label: f.label,
         value: this.formatValue(this.getValue(this.manuscript, f.key))
       }))
-      .filter(e => e.value !== null && e.value !== undefined && e.value !== '');
+      .filter((entry): entry is Entry => entry.value !== null && entry.value !== '');
   }
 
   private getValue(source: any, path: string): any {
@@ -66,7 +74,7 @@ export class ManuscriptPannels {
     }, source);
   }
 
-  private formatValue(value: any): string | number | boolean | null {
+  private formatValue(value: any): string | number | null {
     if (value === null || value === undefined || value === '') {
       return null;
     }
@@ -95,7 +103,7 @@ export class ManuscriptPannels {
       return formattedEntries.length ? formattedEntries.join(', ') : null;
     }
 
-    return value;
+    return String(value);
   }
 
   private formatLabel(key: string): string {

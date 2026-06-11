@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ManuscriptService } from './features/manuscripts/services/manuscript.service';
 import { ManuscriptPannels } from './features/manuscripts/components/manuscript-pannels/manuscript-pannels';
 import { ManuscriptUpload } from './features/manuscripts/components/manuscript-upload/manuscript-upload/manuscript-upload';
@@ -12,21 +12,30 @@ import { ManuscriptUpload } from './features/manuscripts/components/manuscript-u
 })
 export class App implements OnInit {
 
-  constructor(private manuscriptService: ManuscriptService, private cdr: ChangeDetectorRef) { }
+  constructor(private manuscriptService: ManuscriptService) { }
 
   manuscripts: any[] = [];
   selectedManuscript: any = null;
+  isLoadingManuscripts = true;
+  errorMessage = '';
+
+  private manuscriptSorter = new Intl.Collator('fr', {
+    numeric: true,
+    sensitivity: 'base',
+  });
 
   ngOnInit(): void {
     this.manuscriptService.getAll().subscribe({
       next: data => {
-        console.log('DATA API', data);
-        this.manuscripts = data;
-        this.cdr.detectChanges()
+        this.manuscripts = data.sort((a, b) =>
+          this.manuscriptSorter.compare(a.title ?? '', b.title ?? '')
+        );
+        this.isLoadingManuscripts = false;
       },
-      error: err => {
-        console.log('API ERROR', err);
-      }
+      error: () => {
+        this.errorMessage = 'Impossible de charger les manuscrits. Vérifie que le serveur est bien démarré.';
+        this.isLoadingManuscripts = false;
+      },
     });
   }
 

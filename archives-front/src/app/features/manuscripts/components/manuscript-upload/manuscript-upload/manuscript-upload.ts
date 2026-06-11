@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -18,6 +19,8 @@ export class ManuscriptUpload {
   constructor(private manuscriptService: ManuscriptService) {}
 
   onFileSelected(event: Event): void {
+    if (this.isUploading) return;
+
     const input = event.target as HTMLInputElement;
     this.selectFile(input.files?.[0]);
     input.value = '';
@@ -40,8 +43,9 @@ export class ManuscriptUpload {
       next: () => {
         this.reloadPage();
       },
-      error: () => {
-        this.message = 'Impossible d’importer ce fichier CSV.';
+      error: error => {
+        this.message = this.getImportErrorMessage(error);
+        this.selectedFile = null;
         this.isUploading = false;
       },
     });
@@ -61,6 +65,14 @@ export class ManuscriptUpload {
   }
 
   private reloadPage(): void {
-    window.location.href = window.location.href;
+    window.location.reload();
+  }
+
+  private getImportErrorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse && typeof error.error === 'string' && error.error.trim()) {
+      return error.error;
+    }
+
+    return 'Impossible d’importer ce fichier CSV. Vérifie le fichier et le serveur.';
   }
 }

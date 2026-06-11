@@ -1,5 +1,12 @@
 <div class="content">
-    <button title="Le fichier CSV c'est ici !" matFab extended type="button" (click)="csvInput.click()">
+    <button
+        title="Le fichier CSV c'est ici !"
+        matFab
+        extended
+        type="button"
+        [disabled]="isUploading"
+        (click)="csvInput.click()"
+    >
         <mat-icon>upload</mat-icon> 
         Importer
     </button>
