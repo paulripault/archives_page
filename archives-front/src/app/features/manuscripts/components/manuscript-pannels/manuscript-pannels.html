@@ -1,12 +1,19 @@
-<div class="expension-panel">
-    @for (entry of manuscriptEntries; track entry.key) {
+<div class="expension-panel" *ngIf="manuscript">
+
+  @for (entry of entries; track entry.label) {
     <mat-expansion-panel class="pannel">
-        <mat-expansion-panel-header>
-            <mat-panel-title>{{ entry.key }}</mat-panel-title>
-            <ng-template matExpansionPanelContent>
-                {{ entry.value }}
-            </ng-template>
-        </mat-expansion-panel-header>
+
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ entry.label }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-template matExpansionPanelContent>
+        {{ entry.value }}
+      </ng-template>
+
     </mat-expansion-panel>
-    }
+  }
+
 </div>

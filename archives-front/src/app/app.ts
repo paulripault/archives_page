@@ -12,10 +12,10 @@ import { ManuscriptUpload } from './features/manuscripts/components/manuscript-u
 })
 export class App implements OnInit {
 
-  manuscripts: any[] = [];
-  selectedManuscript: any;
-
   constructor(private manuscriptService: ManuscriptService, private cdr: ChangeDetectorRef) { }
+
+  manuscripts: any[] = [];
+  selectedManuscript: any = null;
 
   ngOnInit(): void {
     this.manuscriptService.getAll().subscribe({
@@ -32,11 +32,6 @@ export class App implements OnInit {
 
   onManuscriptSelected(event: Event): void {
     const id = Number((event.target as HTMLSelectElement).value);
-
-    this.manuscriptService.getById(id).subscribe(data => {
-      this.selectedManuscript = data;
-      this.cdr.detectChanges()
-      console.log(this.selectedManuscript);
-    })
+    this.selectedManuscript = this.manuscripts.find(m => m.id == id);
   }
 }

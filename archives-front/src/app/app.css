@@ -30,10 +30,9 @@
 
     .row {
         display: grid;
-        grid-template-columns: 80px 1fr 80px;
+        grid-template-columns: 30px 1fr 30px;
         align-items: center;
         width: 50vw;
-        gap: 10px;
     }
 
     /* zones gauche / droite identiques */
@@ -72,4 +71,5 @@
 .results {
     margin-top: 3vh;
     height: 50vh;
+    max-height: scroll;
 }

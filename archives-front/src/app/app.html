@@ -4,19 +4,22 @@
       <h1>RECHERCHER UN DOCUMENT</h1>
       <div class="row">
         <span class="side left">ICI</span>
-        <input type="text" placeholder="Search..." />
+        <div class="row">
+          <span class="side left"></span>
+          <select (change)="onManuscriptSelected($event)">
+            <option>Sélectionner un manuscrit</option>
+
+            @for (m of manuscripts; track m.id) {
+            <option [value]="m.id">
+              {{ m.title }}
+            </option>
+            }
+            
+          </select>
+        </div>
         <span class="side right"></span>
       </div>
-      <div class="row">
-        <span class="side left"></span>
-        <select (change)="onManuscriptSelected($event)">
-          <option>Sélectionner un manuscrit</option>
-          @for (m of manuscripts; track m.id) {
-          <option [value]="m.id">{{ m.title }}</option>
-          }
-        </select>
-        <span class="side right">OU LÀ</span>
-      </div>
+
       <div class="upload">
         <app-manuscript-upload></app-manuscript-upload>
       </div>
