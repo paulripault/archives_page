@@ -53,6 +53,7 @@ public class ManuscriptService {
 
     // GET ALL
     public List<ManuscriptDTO> getAll() {
+        System.out.println("DB_URL = " + System.getenv("DB_URL"));
         return repository.findAllWithRelations()
                 .stream()
                 .map(this::toDTO)
