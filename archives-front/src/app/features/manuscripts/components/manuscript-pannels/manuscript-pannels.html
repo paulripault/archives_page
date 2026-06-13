@@ -13,14 +13,18 @@
         {{ entry.label }}
       </mat-panel-title>
     </mat-expansion-panel-header>
-
-    <ng-template matExpansionPanelContent> {{ entry.value }}
+    <ng-template matExpansionPanelContent>
       @if (entry.type === 'image') {
-        <img *ngIf="entry.value" [src]="'/images/' + entry.value + '.jpg'" alt="image" class="panel-image" />
+      <img *ngIf="entry.value" [src]="'/images/' + entry.value + '.jpg'" alt="" class="panel-image" />
+      } @else if (entry.type === 'link') {
+      <a [href]="entry.value" target="_blank" rel="noopener noreferrer">
+        {{ entry.value }}
+      </a>
+      } @else {
+      {{ entry.value }}
       }
-    </ng-template>
 
+    </ng-template>
   </mat-expansion-panel>
   }
-
 </div>

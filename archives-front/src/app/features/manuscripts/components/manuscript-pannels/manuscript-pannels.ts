@@ -38,7 +38,7 @@ export class ManuscriptPannels {
     { label: 'Index personnes', key: 'personTags' },
     { label: 'Index lieux', key: 'placeTags' },
     { label: 'Index mots', key: 'wordTags' },
-    { label: 'Liens', key: 'link' },
+    { label: 'Liens', key: 'link', type: 'link' },
   ];
 
   get entries() {
