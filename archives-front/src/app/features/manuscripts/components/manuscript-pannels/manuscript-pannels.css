@@ -1,3 +1,17 @@
+
+.image {
+    display: flex;
+    justify-content: center;
+
+    .zoom-image {
+        width: 40vw;
+    }
+}
+
+.panel-image {
+    height: 50vh;
+}
+
 .expension-panel {
     display: grid;
     gap: 10px;

@@ -30,8 +30,8 @@ export class ManuscriptPannels {
     { label: 'Lieu de conservation', key: 'conservationPlace' },
     { label: 'Nom de la rubrique', key: 'folios.sectionName' },
     { label: 'Place enluminure', key: 'folios.illuminationPosition' },
-    { label: 'Folio', key: 'folios.folio' },
-    { label: 'Zoom', key: 'folios.zoom' },
+    { label: 'Folio', key: 'folios.folio', type: 'image' },
+    // { label: 'Zoom', key: 'folios.zoom' },
     { label: 'Transcription', key: 'folios.transcription' },
     { label: 'Type enluminure', key: 'folios.illuminationType' },
     { label: 'Description', key: 'folios.description' },
@@ -47,6 +47,7 @@ export class ManuscriptPannels {
     return this.displayFields
       .map(f => ({
         label: f.label,
+        type: f.type,
         value: this.formatValue(this.getValue(this.manuscript, f.key))
       }))
       .filter(e => e.value !== null && e.value !== undefined && e.value !== '');
