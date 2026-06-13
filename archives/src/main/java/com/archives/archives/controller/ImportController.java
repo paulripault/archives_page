@@ -109,7 +109,7 @@ public class ImportController {
                 Place conservationPlace = getOrCreatePlace(conservationPlaceName);
 
                 String cote = columns[1].trim();
-                Manuscript manuscript = manuscriptRepository.findFirstByCoteOrderByIdAsc(cote)
+                Manuscript manuscript = manuscriptRepository.findFirstByCoteOrderByIdAsc(columns[0].trim())
                         .orElseGet(Manuscript::new);
 
                 // Enregistrement des manuscrits
